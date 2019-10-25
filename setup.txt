@@ -1,4 +1,6 @@
 https://askubuntu.com/questions/162075/my-computer-boots-to-a-black-screen-what-options-do-i-have-to-fix-it
+https://askubuntu.com/questions/1085042/ubuntu-18-10-installing-nvidia-drivers-leads-to-black-screen-after-grub
+https://askubuntu.com/questions/1129516/black-screen-at-boot-after-nvidia-driver-installation-on-ubuntu-18-04-2-lts
 
 sudo apt-get purge nvidia*
 sudo add-apt-repository ppa:graphics-drivers/ppa
