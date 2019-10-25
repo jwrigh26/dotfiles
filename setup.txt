@@ -1,0 +1,24 @@
+https://askubuntu.com/questions/162075/my-computer-boots-to-a-black-screen-what-options-do-i-have-to-fix-it
+
+sudo apt-get purge nvidia*
+sudo add-apt-repository ppa:graphics-drivers/ppa
+sudo apt-get update
+sudo apt-get install nvidia-driver-410 (this is the new command, also check version number of driver first!)
+Reboot!
+lsmod | grep nvidia
+
+
+1. I stopped using the NVIDIA drivers (you can select that by clicking on
+the battery, then on the estimated battery usage, then click on
+intel graphics
+2. install `sudo apt-get install system76-driver-nvidia`
+3. at some point I also ran `sudo systemctl disable nvidia-fallback.service`
+
+
+GRUB_DEFAULT=0
+GRUB_HIDDEN_TIMEOUT=0
+GRUB_HIDDEN_TIMEOUT_QUIET=true
+GRUB_TIMEOUT=10
+GRUB_DISTRIBUTOR=`lsb_release -i -s 2> /dev/null || echo Debian`
+GRUB_CMDLINE_LINUX_DEFAULT="quiet splash"  // Trying nomodeset
+GRUB_CMDLINE_LINUX=""
