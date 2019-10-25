@@ -27,3 +27,4 @@ GRUB_CMDLINE_LINUX=""
 
 
 https://www.dell.com/support/article/hk/zh/hkbsd1/sln306327/manual-nomodeset-kernel-boot-line-option-for-linux-booting?lang=en
+https://medium.com/@peterpang_84917/personal-experience-of-installing-ubuntu-18-04-lts-on-xps-15-9570-3e53b6cfeefe
