@@ -22,3 +22,6 @@ Sessionx.vim
 tags
 # Persistent undo
 [._]*.un~
+
+# Be sure to set in home dir and run
+# git config --global core.excludesfile ~/.gitignore_global
