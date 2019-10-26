@@ -9,6 +9,11 @@ if [ -d "$HOME/.local/bin" ] ; then
     PATH="$HOME/.local/bin:$PATH"
 fi
 
+# vim to nvim
+if type nvim > /dev/null 2>&1; then
+  alias vim='nvim'
+fi
+
 #Please check your go environment variables by running $go env | grep -i "^GO"
 export GOROOT=/usr/local/go
 export GOPATH=$HOME/Workspace/go
