@@ -1,6 +1,6 @@
-[includeIf "gitdir/i:/home/fish/swipeclock/"]
-	path = ~/.swipeclock.gitconfig
-[includeIf "gitdir/i:/home/fish/workspace/"]
+[includeIf "gitdir/i:/home/username/projects/"]
+	path = ~/.projects.gitconfig
+[includeIf "gitdir/i:/home/username/workspace/"]
 	path = ~/.workspace.gitconfig
 [include]
 	path = ~/.all-projects.gitconfig
