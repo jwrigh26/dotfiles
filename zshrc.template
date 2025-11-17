@@ -1,0 +1,92 @@
+# ~/.zshrc (generated from template)
+
+# --- Git branch in prompt ---
+parse_git_branch() {
+  git branch 2> /dev/null | sed -n -e 's/^\* \(.*\)/[\1]/p'
+}
+
+# --- Prompt colors ---
+COLOR_DEF='%f'
+COLOR_USR='%F{243}'
+COLOR_DIR='%F{197}'
+COLOR_GIT='%F{39}'
+NEWLINE=$'\n'
+
+setopt PROMPT_SUBST
+export PROMPT='${COLOR_USR}%n@%M ${COLOR_DIR}%d ${COLOR_GIT}$(parse_git_branch)${COLOR_DEF}${NEWLINE}%% '
+
+# --- NVM (Node Version Manager) ---
+export NVM_DIR="$HOME/.nvm"
+[[ -s "$NVM_DIR/nvm.sh" ]] && . "$NVM_DIR/nvm.sh"
+[[ -s "$NVM_DIR/bash_completion" ]] && . "$NVM_DIR/bash_completion"
+
+# Use the default Node.js version from nvm (if available)
+command -v nvm >/dev/null 2>&1 && nvm use default > /dev/null 2>&1 || true
+
+# --- PATH tweaks ---
+export PATH="$HOME/bin:$PATH"
+
+# --- Completions ---
+autoload -Uz compinit && compinit
+
+# --- Workspace paths ---
+export DEV_ROOT="$HOME/workspace"
+
+alias cdev='cd "$DEV_ROOT"'          # jump to ~/workspace
+alias cwork='cd "$DEV_ROOT/work"'    # jump to work repos
+alias cper='cd "$DEV_ROOT/personal"' # jump to personal stuff
+alias cexp='cd "$DEV_ROOT/experiments"' # jump to experiments
+
+# Quick command reference
+alias docker-cheat='$HOME/dotfiles/cheat.sh'
+
+# Aliases
+[[ -f "$HOME/dotfiles/.shell_common" ]] && source "$HOME/dotfiles/.shell_common"
+
+
+# Super slicke find proj
+# cproj <project>
+# Searches: ~/workspace/{work,personal,experiments}/<project>
+cproj() {
+  if [[ $# -ne 1 ]]; then
+    echo "Usage: cproj <project-name>"
+    return 1
+  fi
+
+  local project="$1"
+
+  # search in each area
+  for area in work personal experiments; do
+    local target="$DEV_ROOT/$area/$project"
+    if [[ -d "$target" ]]; then
+      cd "$target" && echo "📁 $(pwd)"
+      return 0
+    fi
+  done
+
+  echo "Project '$project' not found in:"
+  echo "  $DEV_ROOT/work/"
+  echo "  $DEV_ROOT/personal/"
+  echo "  $DEV_ROOT/experiments/"
+  return 1
+}
+
+
+
+
+# --- SSH helper: ensure key is added for this session ---
+ensure_ssh_key() {
+  # If there's no ssh-agent associated, start one just for this shell
+  if [[ -z "${SSH_AUTH_SOCK:-}" ]]; then
+    eval "$(ssh-agent -s)" >/dev/null
+  fi
+
+  # Try to add the default key, ignore error if already added
+  if [[ -f "$HOME/.ssh/id_ed25519" ]]; then
+    ssh-add "$HOME/.ssh/id_ed25519" >/dev/null 2>&1 || true
+  fi
+}
+
+ensure_ssh_key
+
+

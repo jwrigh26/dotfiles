@@ -1,0 +1,15 @@
+# ~/.shell_common
+
+# Aliases
+alias gs='git status'
+alias gb='git branch'
+alias gl='git log --oneline --graph --decorate'
+
+# General tools
+alias ll='ls -alF'
+alias la='ls -A'
+alias l='ls -CF'
+
+# Vim
+alias vi='vimx'
+alias vim='vimx'
