@@ -57,5 +57,5 @@ echo -e "  ${YELLOW}ll${RESET}               → ls -alF (detailed list)"
 echo -e "  ${YELLOW}docker system prune -a${RESET}    → Clean up Docker (images, containers, etc.)"
 echo ""
 
-echo -e "${BOLD}${BLUE}💡 Tip: Edit ~/.dotfiles/cheat.sh to customize this list${RESET}"
+echo -e "${BOLD}${BLUE}💡 Tip: Edit ~/.dotfiles/docker-cheat.sh to customize this list${RESET}"
 echo ""

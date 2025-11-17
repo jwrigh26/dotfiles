@@ -38,7 +38,7 @@ alias cper='cd "$DEV_ROOT/personal"' # jump to personal stuff
 alias cexp='cd "$DEV_ROOT/experiments"' # jump to experiments
 
 # Quick command reference
-alias docker-cheat='$HOME/dotfiles/cheat.sh'
+alias docker-cheat='$HOME/dotfiles/docker-cheat.sh'
 
 # Aliases
 [[ -f "$HOME/dotfiles/.shell_common" ]] && source "$HOME/dotfiles/.shell_common"
