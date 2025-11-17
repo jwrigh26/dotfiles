@@ -1,47 +1,60 @@
 {
-  "workbench.iconTheme": "material-icon-theme",
   "files.autoSave": "onFocusChange",
+
   "editor.accessibilitySupport": "off",
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.suggestSelection": "first",
   "editor.fastScrollSensitivity": 5,
   "editor.mouseWheelScrollSensitivity": 3,
   "editor.inlineSuggest.enabled": true,
+
+  // Auto-closing – keep as you prefer, or switch to "languageDefined"
   "editor.autoClosingBrackets": "never",
   "editor.autoClosingQuotes": "never",
+
   "editor.lineNumbers": "relative",
   "extensions.ignoreRecommendations": true,
 
+  // Global format-on-save (optional: set to true if you want Prettier on save)
+  "editor.formatOnSave": false,
+
   // Language-specific settings
   "[javascript]": {
+    "editor.formatOnSave": false,
     "editor.insertSpaces": true,
     "editor.tabSize": 2,
-    "editor.detectIndentation": false
+    "editor.detectIndentation": false,
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": "explicit"
+    }
   },
   "[javascriptreact]": {
     "editor.formatOnSave": false,
     "editor.insertSpaces": true,
     "editor.tabSize": 2,
-    "editor.detectIndentation": false
+    "editor.detectIndentation": false,
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": "explicit"
+    }
   },
   "[json]": {
     "editor.insertSpaces": true,
     "editor.tabSize": 2
   },
   "[rust]": {
+    // Uncomment if you want rust-analyzer formatting:
     // "editor.defaultFormatter": "rust-lang.rust-analyzer"
+  },
+  "[csharp]": {
+    "editor.defaultFormatter": "ms-dotnettools.csharp"
   },
 
   // ESLint settings
   "eslint.enable": true,
   "eslint.validate": ["javascript", "javascriptreact"],
-  "eslint.run": "onType",
-  "eslint.options": {
-    "extensions": [".js", ".jsx"],
-    "overrideConfigFile": "./.eslintrc.cjs",
-  },
+  "eslint.run": "onSave",
 
-  // GitLens settings
+  // GitLens settings (minimal / low-noise)
   "gitlens.currentLine.enabled": false,
   "gitlens.hovers.currentLine.over": "line",
   "gitlens.codeLens.enabled": false,
@@ -55,8 +68,14 @@
     "scminput": false,
     "yaml": false,
     "rust": true,
-    "Log": false
+    "Log": false,
+    "python": false,
+    "javascript": true,
+    "csharp": false,
+    "typescriptreact": false
   },
+  "github.copilot.selectedCompletionModel": "gpt-4o-copilot",
+  "github.copilot.nextEditSuggestions.enabled": false,
 
   // Files to exclude from the explorer view
   "files.exclude": {
@@ -64,14 +83,16 @@
     "**/.factorypath": true,
     "**/.project": true,
     "**/.settings": true,
-    "node_modules/": true
+    "**/node_modules": true
   },
 
   // Terminal settings
   "terminal.integrated.env.linux": {},
   "javascript.updateImportsOnFileMove.enabled": "always",
+  "typescript.updateImportsOnFileMove.enabled": "prompt",
 
-   "vim.insertModeKeyBindings": [
+  // Vim settings
+  "vim.insertModeKeyBindings": [
     {
       "before": ["j", "k"],
       "after": ["<esc>"]
@@ -84,6 +105,8 @@
     "<C-p>": false,
     "<C-w>": false,
     "<C-c>": false,
-    "<C-v>": false,
+    "<C-v>": false
   },
+
+  "hediet.vscode-drawio.resizeImages": null
 }

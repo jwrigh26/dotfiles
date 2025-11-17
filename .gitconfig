@@ -1,6 +1,0 @@
-[includeIf "gitdir/i:/home/username/projects/"]
-	path = ~/.projects.gitconfig
-[includeIf "gitdir/i:/home/username/workspace/"]
-	path = ~/.workspace.gitconfig
-[include]
-	path = ~/.all-projects.gitconfig
