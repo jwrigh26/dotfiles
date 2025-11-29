@@ -2,6 +2,9 @@
 " Justin's Vim Setup
 " ============================
 
+" -- Leader Key ---
+let mapleader = " "
+
 " --- Escape Mapping ---
 inoremap jk <Esc>
 inoremap kj <Esc>
@@ -89,6 +92,95 @@ highlight Pmenu        guifg=#e5e9f0 guibg=#2e3440
 highlight PmenuSel     guifg=#000000 guibg=#88c0d0
 highlight PmenuSbar    guibg=#3b4252
 highlight PmenuThumb   guibg=#5e81ac
+
+" Slight twek to cursorline
+highlight CursorLine guibg=#151821
+
+" ============================
+" Plugins
+" ============================
+call plug#begin('~/.vim/plugged')
+
+" Fuzzy finder core + Vim integration
+Plug 'junegunn/fzf'
+Plug 'junegunn/fzf.vim'
+
+"Linting & formatting
+Plug 'dense-analysis/ale'
+
+call plug#end()
+
+" ============================
+" ALE (Linting / Formatting)
+" ============================
+
+" Use ESLint for JS/TS/React files
+let g:ale_linters = {
+\ 'javascript': ['eslint'],
+\ 'javascriptreact': ['eslint'],
+\ 'typescript': ['eslint'],
+\ 'typescriptreact': ['eslint'],
+\ }
+
+" Use Prettier (then ESLint --fix) as fixers
+let g:ale_fixers = {
+\ 'javascript': ['prettier', 'eslint'],
+\ 'javascriptreact': ['prettier', 'eslint'],
+\ 'typescript': ['prettier', 'eslint'],
+\ 'typescriptreact': ['prettier', 'eslint'],
+\ }
+
+" Automatically run fixers on save (optional)
+let g:ale_fix_on_save = 0
+
+" Show ALE messages in the status line (simple mode)
+let g:ale_echo_cursor = 1
+
+" Keep linting while you type, but not *too* aggressively
+let g:ale_lint_on_text_changed = 'normal'
+let g:ale_lint_on_insert_leave = 1
+
+
+" --- Fuzzy Finder Mappings ---
+"  Fuzzy search files <Space>p
+"  Fuzzy search inside files <Space>f
+"  Jump between open buffers <Space>b
+"  Reopen recent files <Space>r
+
+" Files in current project (like VS Code's Ctrl+P)
+nnoremap <leader>p :Files<CR>
+
+" Ripgrep text search in project
+nnoremap <leader>f :Rg<CR>
+
+" Buffer switcher
+nnoremap <leader>b :Buffers<CR>
+" Buffer close no save and close no save force
+nnoremap <leader>c :bd<CR>
+nnoremap <leader>C :bd!<CR>
+
+" Recent files
+nnoremap <leader>r :History<CR>
+
+" Save file"
+nnoremap <leader>w :w<CR>
+
+" Quit file"
+nnoremap <leader>q :q<CR>
+
+" Toggle search highlight"
+nnoremap <leader>h :nohlsearch<CR>
+
+" Run linting manually
+nnoremap <leader>l :ALELint<CR>
+
+" Run fixers (Prettier + ESLint) on demand
+nnoremap <leader>F :ALEFix<CR>
+
+" Format current file with npx prettier (uses project config)
+nnoremap <leader>P :!npx prettier --write %<CR>
+
+
 
 
 

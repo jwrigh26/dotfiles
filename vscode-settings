@@ -90,6 +90,11 @@
   "terminal.integrated.env.linux": {},
   "javascript.updateImportsOnFileMove.enabled": "always",
   "typescript.updateImportsOnFileMove.enabled": "prompt",
+  
+  "[makefile]": {
+  "editor.insertSpaces": false,
+  "editor.tabSize": 4
+  },
 
   // Vim settings
   "vim.insertModeKeyBindings": [

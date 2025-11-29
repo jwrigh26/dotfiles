@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Justin's Vim Navigation + Fuzzy Finder Cheat Sheet</title>
+  <style>
+    :root {
+      --bg: #050b10;
+      --bg-alt: #0b1720;
+      --card-bg: #101a24;
+      --accent: #69aafc;
+      --accent-soft: rgba(105, 170, 252, 0.1);
+      --text: #e3eefc;
+      --muted: #9cb3cf;
+      --border: #1e2a36;
+      --danger: #ff6b8b;
+      --font-main: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+        "Segoe UI", sans-serif;
+      --font-mono: "JetBrains Mono", "Fira Code", Menlo, Monaco, Consolas,
+        "Liberation Mono", "Courier New", monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: var(--font-main);
+      background: radial-gradient(circle at top, #0b253a 0, #050b10 55%, #020509 100%);
+      color: var(--text);
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .page {
+      width: 100%;
+      max-width: 1100px;
+      margin: 0 auto;
+      background: linear-gradient(135deg, rgba(13, 39, 63, 0.9), rgba(2, 9, 16, 0.95));
+      border-radius: 20px;
+      border: 1px solid #162331;
+      box-shadow:
+        0 30px 80px rgba(0, 0, 0, 0.75),
+        0 0 0 1px rgba(255, 255, 255, 0.02);
+      padding: 24px 26px 30px;
+      backdrop-filter: blur(12px);
+    }
+
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      gap: 16px;
+      margin-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 16px;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 1.9rem;
+      letter-spacing: 0.03em;
+    }
+
+    header p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .pill-row {
+      margin-left: auto;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      font-size: 0.8rem;
+    }
+
+    .pill {
+      border-radius: 999px;
+      padding: 6px 10px;
+      background: rgba(3, 15, 30, 0.8);
+      border: 1px solid rgba(105, 170, 252, 0.35);
+      color: var(--muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+
+    .pill span.key {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      padding: 2px 6px;
+      border-radius: 6px;
+      background: rgba(12, 26, 46, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      color: var(--text);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1.1fr);
+      gap: 16px;
+    }
+
+    @media (max-width: 900px) {
+      .grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .pill-row {
+        margin-left: 0;
+      }
+    }
+
+    .column {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      padding: 14px 14px 12px;
+      box-shadow: 0 0 0 1px rgba(0,0,0,0.35);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .card-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .card-tag {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      background: rgba(105, 170, 252, 0.08);
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(105, 170, 252, 0.32);
+    }
+
+    .hint {
+      margin: 0 0 6px;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .shortcut-list {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 5px;
+      font-size: 0.85rem;
+    }
+
+    .shortcut {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      padding: 4px 6px;
+      border-radius: 10px;
+      background: rgba(4, 13, 24, 0.8);
+      border: 1px solid transparent;
+    }
+
+    .shortcut:nth-child(odd) {
+      background: rgba(8, 20, 36, 0.95);
+    }
+
+    .shortcut-keys {
+      flex-shrink: 0;
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+
+    .shortcut-desc {
+      color: var(--text);
+    }
+
+    .shortcut-note {
+      color: var(--muted);
+      font-size: 0.78rem;
+    }
+
+    .key {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      padding: 2px 6px;
+      border-radius: 6px;
+      background: rgba(9, 21, 39, 1);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: var(--text);
+      box-shadow:
+        0 1px 0 rgba(255, 255, 255, 0.04),
+        0 0 0 1px rgba(0, 0, 0, 0.8);
+    }
+
+    .key-leader::before {
+      content: "␣";
+      margin-right: 2px;
+    }
+
+    .group-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      margin: 4px 0 4px;
+    }
+
+    .pill-inline {
+      display: inline-flex;
+      padding: 2px 6px;
+      border-radius: 999px;
+      background: rgba(105, 170, 252, 0.12);
+      border: 1px solid rgba(105, 170, 252, 0.4);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+    }
+
+    ul.practice {
+      margin: 6px 0 0;
+      padding-left: 18px;
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+
+    ul.practice li {
+      margin-bottom: 4px;
+    }
+
+    .accent-box {
+      margin-top: 4px;
+      border-radius: 10px;
+      border: 1px dashed rgba(105,170,252,0.45);
+      background: rgba(4,14,30,0.96);
+      padding: 6px 8px;
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .accent-box strong {
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    footer {
+      margin-top: 18px;
+      font-size: 0.76rem;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header>
+      <div>
+        <h1>Justin&rsquo;s Vim Navigation &amp; Fuzzy Finder Guide</h1>
+        <p>Use this like a mini dojo while you level up to navigation ninja.</p>
+      </div>
+      <div class="pill-row">
+        <div class="pill">
+          <span class="key">␣</span>
+          <span>Leader = Space</span>
+        </div>
+        <div class="pill">
+          <span class="key">jk</span>
+          <span>Fast Escape</span>
+        </div>
+      </div>
+    </header>
+
+    <section class="grid">
+      <!-- LEFT COLUMN -->
+      <div class="column">
+        <!-- Fuzzy Finder -->
+        <article class="card">
+          <div class="card-header">
+            <div class="card-title">Fuzzy Finder &amp; Session Mappings</div>
+            <div class="card-tag">Files, Search &amp; Closing</div>
+          </div>
+          <p class="hint">Powered by <code style="font-family:var(--font-mono);">fzf</code> + <code style="font-family:var(--font-mono);">fzf.vim</code>.</p>
+          <div class="shortcut-list">
+            <div class="shortcut">
+              <div class="shortcut-keys">
+                <span class="key key-leader">p</span>
+              </div>
+              <div>
+                <div class="shortcut-desc">Project files — like VS Code&rsquo;s <span class="key">Ctrl</span>+<span class="key">P</span></div>
+                <div class="shortcut-note">Type a few letters from the file name; fuzzy match does the rest.</div>
+              </div>
+            </div>
+
+            <div class="shortcut">
+              <div class="shortcut-keys">
+                <span class="key key-leader">f</span>
+              </div>
+              <div>
+                <div class="shortcut-desc">Search inside files with <code>rg</code></div>
+                <div class="shortcut-note">Full project text search (super fast ripgrep).</div>
+              </div>
+            </div>
+
+            <div class="shortcut">
+              <div class="shortcut-keys">
+                <span class="key key-leader">b</span>
+              </div>
+              <div>
+                <div class="shortcut-desc">Switch between open buffers</div>
+                <div class="shortcut-note">Use it like a smarter &ldquo;Recent Tabs&rdquo; switcher.</div>
+              </div>
+            </div>
+
+            <div class="shortcut">
+              <div class="shortcut-keys">
+                <span class="key key-leader">r</span>
+              </div>
+              <div>
+                <div class="shortcut-desc">Reopen recent files</div>
+                <div class="shortcut-note">Great for &ldquo;what was I just editing yesterday?&rdquo;</div>
+              </div>
+            </div>
+
+            <div class="shortcut">
+              <div class="shortcut-keys">
+                <span class="key key-leader">w</span>
+              </div>
+              <div>
+                <div class="shortcut-desc">Save file (<code>:w</code>)</div>
+              </div>
+            </div>
+
+            <div class="shortcut">
+              <div class="shortcut-keys">
+                <span class="key key-leader">c</span>
+              </div>
+              <div>
+                <div class="shortcut-desc">Close current buffer (<code>:bd</code>)</div>
+                <div class="shortcut-note">Closes the file but keeps Vim running.</div>
+              </div>
+            </div>
+
+            <div class="shortcut">
+              <div class="shortcut-keys">
+                <span class="key key-leader">C</span>
+              </div>
+              <div>
+                <div class="shortcut-desc">Force close current buffer (<code>:bd!</code>)</div>
+                <div class="shortcut-note">Use when you don&rsquo;t care about unsaved changes.</div>
+              </div>
+            </div>
+
+            <div class="shortcut">
+              <div class="shortcut-keys">
+                <span class="key key-leader">q</span>
+              </div>
+              <div>
+                <div class="shortcut-desc">Quit window (<code>:q</code>)</div>
+                <div class="shortcut-note">If this is the last window, Vim exits completely.</div>
+              </div>
+            </div>
+
+            <div class="shortcut">
+              <div class="shortcut-keys">
+                <span class="key key-leader">h</span>
+              </div>
+              <div>
+                <div class="shortcut-desc">Clear search highlight (<code>:nohlsearch</code>)</div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Buffers -->
+        <article class="card">
+          <div class="card-header">
+            <div class="card-title">Buffers &amp; When Things Get Weird</div>
+            <div class="card-tag">Open Files in Memory</div>
+          </div>
+          <p class="hint">
+            Buffers are just &ldquo;open files in memory&rdquo;. Windows show them; tabs group windows.
+          </p>
+          <div class="shortcut-list">
+            <div class="shortcut">
+              <div class="shortcut-keys">
+                <span class="key">:ls</span>
+                <span class="key">:buffers</span>
+              </div>
+              <div>
+                <div class="shortcut-desc">List all buffers</div>
+                <div class="shortcut-note">Numbers on the left are buffer IDs. Use them with <code>:b</code>.</div>
+              </div>
+            </div>
+
+            <div class="shortcut">
+              <div class="shortcut-keys">
+                <span class="key">:b 2</span>
+                <span class="key">:b#</span>
+              </div>
+              <div>
+                <div class="shortcut-desc">Jump to buffer #2 / jump to previous buffer</div>
+              </div>
+            </div>
+
+            <div class="shortcut">
+              <div class="shortcut-keys">
+                <span class="key">:bn</span>
+                <span class="key">:bp</span>
+              </div>
+              <div>
+                <div class="shortcut-desc">Next / previous buffer</div>
+              </div>
+            </div>
+
+            <div class="shortcut">
+              <div class="shortcut-keys">
+                <span class="key">:bd</span>
+                <span class="key">:bd!</span>
+              </div>
+              <div>
+                <div class="shortcut-desc">Delete buffer (close file) / force delete</div>
+                <div class="shortcut-note">Window stays; only the buffer is closed.</div>
+              </div>
+            </div>
+
+            <div class="shortcut">
+              <div class="shortcut-keys">
+                <span class="key">:wa</span>
+                <span class="key">:qa</span>
+                <span class="key">:qa!</span>
+              </div>
+              <div>
+                <div class="shortcut-desc">Write all / quit all / force quit all</div>
+              </div>
+            </div>
+          </div>
+          <div class="accent-box">
+            <strong>When Vim complains:</strong><br />
+            <span class="shortcut-note">
+              <code>E37: No write since last change</code> → either save with <code>:w</code> or close just this file with
+              <code>:bd</code> / <code>:bd!</code> (or your mappings <span class="key">␣c</span> / <span class="key">␣C</span>).<br />
+              If you see a &ldquo;swap file exists&rdquo; message and you&rsquo;re sure no other Vim has it open, choosing <strong>d</strong> to delete the swap is usually safe.<br />
+              Prefer <span class="key">␣c</span> over <span class="key">␣q</span> when you just want to close a file and keep Vim running.
+            </span>
+          </div>
+        </article>
+
+        <!-- Core navigation -->
+        <article class="card">
+          <div class="card-header">
+            <div class="card-title">Core Navigation (Refresher)</div>
+            <div class="card-tag">You Already Know</div>
+          </div>
+          <div class="shortcut-list">
+            <div class="shortcut">
+              <div class="shortcut-keys">
+                <span class="key">h</span>
+                <span class="key">j</span>
+                <span class="key">k</span>
+                <span class="key">l</span>
+              </div>
+              <div>
+                <div class="shortcut-desc">Left, down, up, right</div>
+              </div>
+            </div>
+
+            <div class="shortcut">
+              <div class="shortcut-keys">
+                <span class="key">Ctrl</span><span class="key">u</span>
+                <span class="key">Ctrl</span><span class="key">d</span>
+              </div>
+              <div>
+                <div class="shortcut-desc">Half-page up / down</div>
+              </div>
+            </div>
+
+            <div class="shortcut">
+              <div class="shortcut-keys">
+                <span class="key">gg</span>
+                <span class="key">G</span>
+              </div>
+              <div>
+                <div class="shortcut-desc">Top / bottom of file</div>
+              </div>
+            </div>
+
+            <div class="shortcut">
+              <div class="shortcut-keys">
+                <span class="key">zz</span>
+              </div>
+              <div>
+                <div class="shortcut-desc">Center current line</div>
+              </div>
+            </div>
+
+            <div class="shortcut">
+              <div class="shortcut-keys">
+                <span class="key">jk</span>
+                <span class="key">kj</span>
+              </div>
+              <div>
+                <div class="shortcut-desc">Exit insert mode (your mapping)</div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Practice -->
+        <article class="card">
+          <div class="card-header">
+            <div class="card-title">Tiny Practice Ideas</div>
+            <div class="card-tag">5-Minute Reps</div>
+          </div>
+          <ul class="practice">
+            <li>Open a random file and only move with <span class="key">w</span>, <span class="key">b</span>, <span class="key">0</span>, <span class="key">$</span>, <span class="key">}</span>, <span class="key">{</span>.</li>
+            <li>Pick a symbol (like <code>=</code>) and find every occurrence using <span class="key">f=</span> and <span class="key">;</span>.</li>
+            <li>Use <span class="key">/term</span> + <span class="key">n</span>/<span class="key">N</span> to navigate search results instead of fzf for a few minutes.</li>
+          </ul>
+        </article>
+      </div>
+
+      <!-- RIGHT COLUMN -->
+      <div class="column">
+        <!-- Words / Lines -->
+        <article class="card">
+          <div class="card-header">
+            <div class="card-title">Navigation: Words &amp; Lines</div>
+            <div class="card-tag">Faster Than Arrow Keys</div>
+          </div>
+
+          <p class="group-label">Word motions</p>
+          <div class="shortcut-list">
+            <div class="shortcut">
+              <div class="shortcut-keys">
+                <span class="key">w</span>
+                <span class="key">b</span>
+              </div>
+              <div>
+                <div class="shortcut-desc">Next / previous word start</div>
+                <div class="shortcut-note">Use for jumping tokens in code.</div>
+              </div>
+            </div>
+
+            <div class="shortcut">
+              <div class="shortcut-keys">
+                <span class="key">e</span>
+                <span class="key">ge</span>
+              </div>
+              <div>
+                <div class="shortcut-desc">Next / previous word end</div>
+                <div class="shortcut-note">Nice for selecting right up to commas.</div>
+              </div>
+            </div>
+
+            <div class="shortcut">
+              <div class="shortcut-keys">
+                <span class="key">0</span>
+                <span class="key">^</span>
+                <span class="key">$</span>
+              </div>
+              <div>
+                <div class="shortcut-desc">Line start / first non-blank / line end</div>
+              </div>
+            </div>
+          </div>
+
+          <p class="group-label" style="margin-top:8px;">Paragraph &amp; screen</p>
+          <div class="shortcut-list">
+            <div class="shortcut">
+              <div class="shortcut-keys">
+                <span class="key">{</span>
+                <span class="key">}</span>
+              </div>
+              <div>
+                <div class="shortcut-desc">Previous / next paragraph or blank-line block</div>
+              </div>
+            </div>
+
+            <div class="shortcut">
+              <div class="shortcut-keys">
+                <span class="key">Ctrl</span><span class="key">b</span>
+                <span class="key">Ctrl</span><span class="key">f</span>
+              </div>
+              <div>
+                <div class="shortcut-desc">Full page up / full page down</div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Find, Search, Jumps -->
+        <article class="card">
+          <div class="card-header">
+            <div class="card-title">Navigation: Find, Search &amp; Jumps</div>
+            <div class="card-tag">Ninja Moves</div>
+          </div>
+
+          <p class="group-label">Character find on the line</p>
+          <div class="shortcut-list">
+            <div class="shortcut">
+              <div class="shortcut-keys">
+                <span class="key">f</span><span class="key">x</span>
+                <span class="key">F</span><span class="key">x</span>
+              </div>
+              <div>
+                <div class="shortcut-desc">Jump to next / previous <em>x</em> on this line</div>
+                <div class="shortcut-note">e.g. <span class="key">f)</span> to go to the next closing parenthesis.</div>
+              </div>
+            </div>
+
+            <div class="shortcut">
+              <div class="shortcut-keys">
+                <span class="key">t</span><span class="key">x</span>
+                <span class="key">T</span><span class="key">x</span>
+              </div>
+              <div>
+                <div class="shortcut-desc">Jump just <em>before</em> next / previous <em>x</em></div>
+                <div class="shortcut-note">Great for changing inside parens: <span class="key">dt)</span>, etc.</div>
+              </div>
+            </div>
+
+            <div class="shortcut">
+              <div class="shortcut-keys">
+                <span class="key">;</span>
+                <span class="key">,</span>
+              </div>
+              <div>
+                <div class="shortcut-desc">Repeat last <span class="key">f</span>/<span class="key">F</span>/<span class="key">t</span>/<span class="key">T</span> forward / backward</div>
+              </div>
+            </div>
+          </div>
+
+          <p class="group-label" style="margin-top:8px;">Search</p>
+          <div class="shortcut-list">
+            <div class="shortcut">
+              <div class="shortcut-keys">
+                <span class="key">/pattern</span>
+                <span class="key">?pattern</span>
+              </div>
+              <div>
+                <div class="shortcut-desc">Search forward / backward</div>
+              </div>
+            </div>
+
+            <div class="shortcut">
+              <div class="shortcut-keys">
+                <span class="key">n</span>
+                <span class="key">N</span>
+              </div>
+              <div>
+                <div class="shortcut-desc">Next / previous search result</div>
+              </div>
+            </div>
+
+            <div class="shortcut">
+              <div class="shortcut-keys">
+                <span class="key">*</span>
+                <span class="key">#</span>
+              </div>
+              <div>
+                <div class="shortcut-desc">Search word under cursor forward / backward</div>
+                <div class="shortcut-note">Perfect for jumping through usages of a variable.</div>
+              </div>
+            </div>
+          </div>
+
+          <p class="group-label" style="margin-top:8px;">Jump list &amp; matching</p>
+          <div class="shortcut-list">
+            <div class="shortcut">
+              <div class="shortcut-keys">
+                <span class="key">Ctrl</span><span class="key">o</span>
+                <span class="key">Ctrl</span><span class="key">i</span>
+              </div>
+              <div>
+                <div class="shortcut-desc">Jump back / forward in location history</div>
+                <div class="shortcut-note">Think &ldquo;back&rdquo; and &ldquo;forward&rdquo; in browser history.</div>
+              </div>
+            </div>
+
+            <div class="shortcut">
+              <div class="shortcut-keys">
+                <span class="key">%</span>
+              </div>
+              <div>
+                <div class="shortcut-desc">Jump to matching <code>()</code>, <code>[]</code>, <code>{}</code></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="accent-box">
+            <strong>Combo idea:</strong> jump into a function with <span class="key">%</span>, then use
+            <span class="key">}</span> to hop to the next block, and <span class="key">Ctrl</span><span class="key">o</span>
+            to bounce back.
+          </div>
+        </article>
+
+        <!-- Visual mode & text objects -->
+        <article class="card">
+          <div class="card-header">
+            <div class="card-title">Visual Mode &amp; Text Objects</div>
+            <div class="card-tag">Precision</div>
+          </div>
+
+          <p class="hint">You already know how to enter visual mode; these make it surgical.</p>
+
+          <div class="shortcut-list">
+            <div class="shortcut">
+              <div class="shortcut-keys">
+                <span class="key">viw</span>
+                <span class="key">ciw</span>
+              </div>
+              <div>
+                <div class="shortcut-desc">Select / change inner word</div>
+                <div class="shortcut-note">Cursor anywhere in a word → edit it instantly.</div>
+              </div>
+            </div>
+
+            <div class="shortcut">
+              <div class="shortcut-keys">
+                <span class="key">vi)</span>
+                <span class="key">va)</span>
+              </div>
+              <div>
+                <div class="shortcut-desc">Select inside / around parentheses</div>
+              </div>
+            </div>
+
+            <div class="shortcut">
+              <div class="shortcut-keys">
+                <span class="key">vi'</span>
+                <span class="key">vi"</span>
+              </div>
+              <div>
+                <div class="shortcut-desc">Select inside quotes</div>
+              </div>
+            </div>
+
+            <div class="shortcut">
+              <div class="shortcut-keys">
+                <span class="key">V</span>
+              </div>
+              <div>
+                <div class="shortcut-desc">Line-wise visual mode</div>
+                <div class="shortcut-note">Great with <span class="key">&gt;&gt;</span> / <span class="key">&lt;&lt;</span> for indenting blocks.</div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Motion Recipes -->
+        <article class="card">
+          <div class="card-header">
+            <div class="card-title">Motion Recipes (Quick Examples)</div>
+            <div class="card-tag">Operator + Count + Motion</div>
+          </div>
+          <p class="hint">
+            Pattern: <code>[operator] [count] [motion]</code>. You just type the keys in order,
+            no spaces. Think LEGO pieces snapping together.
+          </p>
+          <div class="shortcut-list">
+            <div class="shortcut">
+              <div class="shortcut-keys">
+                <span class="key">5w</span>
+              </div>
+              <div>
+                <div class="shortcut-desc">Move 5 words forward</div>
+                <div class="shortcut-note">Type: <strong>5</strong> then <strong>w</strong>.</div>
+              </div>
+            </div>
+
+            <div class="shortcut">
+              <div class="shortcut-keys">
+                <span class="key">3b</span>
+              </div>
+              <div>
+                <div class="shortcut-desc">Move 3 words backward</div>
+                <div class="shortcut-note">Type: <strong>3</strong> then <strong>b</strong>.</div>
+              </div>
+            </div>
+
+            <div class="shortcut">
+              <div class="shortcut-keys">
+                <span class="key">4e</span>
+              </div>
+              <div>
+                <div class="shortcut-desc">Move to end of the 4th word ahead</div>
+                <div class="shortcut-note">Nice for landing exactly at the end of a token sequence.</div>
+              </div>
+            </div>
+
+            <div class="shortcut">
+              <div class="shortcut-keys">
+                <span class="key">d2w</span>
+                <span class="key">2dw</span>
+              </div>
+              <div>
+                <div class="shortcut-desc">Delete 2 words forward</div>
+                <div class="shortcut-note">Both forms work. Type: <strong>d 2 w</strong> or <strong>2 d w</strong>.</div>
+              </div>
+            </div>
+
+            <div class="shortcut">
+              <div class="shortcut-keys">
+                <span class="key">d$</span>
+              </div>
+              <div>
+                <div class="shortcut-desc">Delete from cursor to end of line</div>
+                <div class="shortcut-note">Type: <strong>d</strong> then <strong>$</strong>.</div>
+              </div>
+            </div>
+
+            <div class="shortcut">
+              <div class="shortcut-keys">
+                <span class="key">3dd</span>
+              </div>
+              <div>
+                <div class="shortcut-desc">Delete 3 lines</div>
+                <div class="shortcut-note">Type: <strong>3</strong> then <strong>d</strong> then <strong>d</strong>.</div>
+              </div>
+            </div>
+
+            <div class="shortcut">
+              <div class="shortcut-keys">
+                <span class="key">df)</span>
+              </div>
+              <div>
+                <div class="shortcut-desc">Delete up to and including next <code>)</code> on this line</div>
+                <div class="shortcut-note">Type: <strong>d</strong> then <strong>f</strong> then <strong>)</strong>.</div>
+              </div>
+            </div>
+
+            <div class="shortcut">
+              <div class="shortcut-keys">
+                <span class="key">dt;</span>
+              </div>
+              <div>
+                <div class="shortcut-desc">Delete up to (but not including) next <code>;</code></div>
+                <div class="shortcut-note">Type: <strong>d</strong> then <strong>t</strong> then <strong>;</strong>.</div>
+              </div>
+            </div>
+
+            <div class="shortcut">
+              <div class="shortcut-keys">
+                <span class="key">ciw</span>
+              </div>
+              <div>
+                <div class="shortcut-desc">Change inner word</div>
+                <div class="shortcut-note">Cursor anywhere in a word → type: <strong>c</strong> <strong>i</strong> <strong>w</strong>.</div>
+              </div>
+            </div>
+
+            <div class="shortcut">
+              <div class="shortcut-keys">
+                <span class="key">ci]</span>
+              </div>
+              <div>
+                <div class="shortcut-desc">Change inside square brackets <code>[...]</code></div>
+                <div class="shortcut-note">Cursor anywhere inside → type: <strong>c</strong> <strong>i</strong> <strong>]</strong>.</div>
+              </div>
+            </div>
+
+            <div class="shortcut">
+              <div class="shortcut-keys">
+                <span class="key">ci)</span>
+              </div>
+              <div>
+                <div class="shortcut-desc">Change inside parentheses <code>(...)</code></div>
+                <div class="shortcut-note">Cursor inside → type: <strong>c</strong> <strong>i</strong> <strong>)</strong>.</div>
+              </div>
+            </div>
+
+            <div class="shortcut">
+              <div class="shortcut-keys">
+                <span class="key">ci"</span>
+              </div>
+              <div>
+                <div class="shortcut-desc">Change inside double quotes</div>
+                <div class="shortcut-note">Cursor anywhere between quotes → type: <strong>c</strong> <strong>i</strong> <strong>"</strong>.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="accent-box">
+            <strong>Drill idea:</strong> pick one recipe (like <span class="key">ci]</span>) and use it 10 times in a row
+            instead of manually deleting and retyping. Let the muscle memory bake in.
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <footer>
+      <span>Tip: keep this open on a second monitor while coding until these moves feel automatic.</span>
+      <span class="pill-inline">Goal: fewer arrow keys, more motions 🚀</span>
+    </footer>
+  </main>
+</body>
+</html>
+

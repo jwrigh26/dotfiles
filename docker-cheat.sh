@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# ~/.dotfiles/cheat.sh
+# ~/.dotfiles/docker-cheat.sh
 # Quick reference for common daily commands
 
 # Colors
@@ -45,10 +45,18 @@ echo ""
 
 # Docker Compose
 echo -e "${BOLD}${GREEN}🔧 Docker Compose:${RESET}"
-echo -e "  ${YELLOW}docker compose up -d${RESET}          → Start services in background"
-echo -e "  ${YELLOW}docker compose down${RESET}           → Stop and remove containers"
+echo -e "  ${YELLOW}docker compose up -d${RESET}          → Create & start services in background"
+echo -e "  ${YELLOW}docker compose down${RESET}           → Stop & remove containers/networks"
+echo -e "  ${YELLOW}docker compose start${RESET}          → Start existing stopped services"
+echo -e "  ${YELLOW}docker compose stop${RESET}           → Stop running services (keep containers)"
 echo -e "  ${YELLOW}docker compose logs -f${RESET}        → Follow all service logs"
 echo -e "  ${YELLOW}docker compose ps${RESET}             → List running services"
+echo -e "  ${YELLOW}docker compose exec <svc> bash${RESET} → Shell into running service"
+echo ""
+echo -e "${BOLD}${GREEN}🔧 Custom Compose Files:${RESET}"
+echo -e "  ${YELLOW}docker compose -f docker-compose.dev.yml up -d${RESET}     → Use dev config"
+echo -e "  ${YELLOW}docker compose -f docker-compose.prod.yml up -d${RESET}    → Use prod config"
+echo -e "  ${YELLOW}docker compose -f docker-compose.test.yml up --abort-on-container-exit${RESET} → Run tests"
 echo ""
 
 # System
