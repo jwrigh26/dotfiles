@@ -9,6 +9,10 @@ let mapleader = " "
 inoremap jk <Esc>
 inoremap kj <Esc>
 
+" --- Where am I
+set laststatus=2
+set statusline=%f\ %m\ %r\ %y\ %=Ln:%l/%L\ Col:%c
+
 " --- Line Numbers ---
 set number
 set relativenumber
@@ -39,6 +43,15 @@ set showmatch
 set wildmenu
 set ruler
 set termguicolors
+
+"-- Soft Wrap
+set nowrap
+"set linebreak
+"set breakindent
+"set breakindentopt=shift:2
+"set showbreak=↳\
+set colorcolumn=80
+
 
 " --- Undo Persistence ---
 set undofile
@@ -95,6 +108,14 @@ highlight PmenuThumb   guibg=#5e81ac
 
 " Slight twek to cursorline
 highlight CursorLine guibg=#151821
+
+" Arctic Dracula statusline colors
+highlight StatusLine   guifg=#69aafc guibg=#0b1720
+highlight StatusLineNC guifg=#9cb3cf guibg=#050b10
+
+" ColorColumn
+highlight ColorColumn guibg=#0b253a
+
 
 " ============================
 " Plugins
@@ -153,11 +174,6 @@ nnoremap <leader>p :Files<CR>
 " Ripgrep text search in project
 nnoremap <leader>f :Rg<CR>
 
-" Buffer switcher
-nnoremap <leader>b :Buffers<CR>
-" Buffer close no save and close no save force
-nnoremap <leader>c :bd<CR>
-nnoremap <leader>C :bd!<CR>
 
 " Recent files
 nnoremap <leader>r :History<CR>
@@ -177,8 +193,30 @@ nnoremap <leader>l :ALELint<CR>
 " Run fixers (Prettier + ESLint) on demand
 nnoremap <leader>F :ALEFix<CR>
 
+" All Things Buffer
+
+" Simple list + choose
+nnoremap <leader>bb :ls<CR>:b
+"
+" FZF buffers (fuzzy by filename)
+nnoremap <leader>bl  :Buffers<CR>
+
+" Cycle buffers
+nnoremap <leader>bn :bnext<CR>
+nnoremap <leader>bp :bprevious<CR>
+nnoremap <leader><Tab> :b#<CR>
+"
+" Buffer close no save and close no save force
+nnoremap <leader>c :bd<CR>
+nnoremap <leader>C :bd!<CR>
+
+
 " Format current file with npx prettier (uses project config)
-nnoremap <leader>P :!npx prettier --write %<CR>
+" nnoremap <leader>P :!npx prettier --write %<CR>
+"
+
+
+
 
 
 

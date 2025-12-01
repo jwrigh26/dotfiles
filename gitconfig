@@ -1,0 +1,8 @@
+[user]
+	name = Justin Wright
+	email = jwrigh26@gmail.com
+[init]
+	defaultBranch = main
+[alias]
+  lg = log --graph --abbrev-commit --pretty=format:%C(yellow)%h%C(reset)%C(red)%d%C(reset)%n%C(green)%cr%C(reset)%n%s%n%C(blue)<%an>%C(reset)%n
+
