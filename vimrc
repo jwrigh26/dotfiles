@@ -214,12 +214,3 @@ nnoremap <leader>C :bd!<CR>
 " Format current file with npx prettier (uses project config)
 " nnoremap <leader>P :!npx prettier --write %<CR>
 "
-
-
-
-
-
-
-
-
-

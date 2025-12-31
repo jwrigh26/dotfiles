@@ -89,4 +89,7 @@ ensure_ssh_key() {
 
 ensure_ssh_key
 
+export NPM_TOKEN=""
 
+# Ensure proper file permissions for npm and git
+umask 0022
